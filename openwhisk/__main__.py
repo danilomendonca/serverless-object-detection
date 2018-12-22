@@ -1,33 +1,20 @@
-import json
 import numpy as np
-from PIL import Image
-from cv2 import dnn as nn
-import time
+import cv2
 import base64
-import io
 
-def response_message(statusCode, jsonContent):
-    return {"statusCode": statusCode,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps(jsonContent)}
-
-neural_network = nn.readNetFromCaffe("./neuralNetwork/MobileNetSSD_deploy.prototxt.txt",
-                                     "./neuralNetwork/MobileNetSSD_deploy.caffemodel")
+neural_network = cv2.dnn.readNetFromCaffe("./neuralNetwork/MobileNetSSD_deploy.prototxt.txt",
+                                          "./neuralNetwork/MobileNetSSD_deploy.caffemodel")
 
 classNames = ["background", "aeroplane", "bicycle", "bird", "boat",
               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
               "dog", "horse", "motorbike", "person", "pottedplant",
               "sheep", "sofa", "train", "tvmonitor"]
 
-print "Done preparing neural network!!"
-
 def main(args):
-    #payload = json.loads(args["body"])
-    # image = Image.open(io.BytesIO(base64.b64decode(payload["image"])))
-    image = Image.open("./testImages/person.jpg")
-    open_cv_image = np.array(image)
+    image = cv2.imdecode(np.fromstring(base64.b64decode(args["image"]), dtype=np.uint8),1)
+    # image = cv2.imread("./testImages/boat.jpg")
     # fit neural network required input
-    input_blob = nn.blobFromImage(open_cv_image,
+    input_blob = cv2.dnn.blobFromImage(image,
                                        # scale factor
                                        0.007843,
                                        # input width and input height
@@ -38,12 +25,12 @@ def main(args):
                                        False,
                                        # crop
                                        False)
-    start_millis = int(round(time.time() * 1000))
+    # start_millis = int(round(time.time() * 1000))
     neural_network.setInput(input_blob)
     # network output is (1, 1, numDetectedObjects, 7), reshape in (numDetectedObjects, 7)
     detections = neural_network.forward()[0][0]
-    millis = int(round(time.time() * 1000)) - start_millis
-    print "OpenCV Neural network computation: {} milliseconds".format(millis)
+    # millis = int(round(time.time() * 1000)) - start_millis
+    # print "OpenCV Neural network computation: {} milliseconds".format(millis)
 
     contents = []
     for elem in detections:
@@ -53,4 +40,9 @@ def main(args):
         confidence = 100 * sorted(elem[2:], reverse = True)[0]
         contents.append({"Name": name, "Confidence": confidence})
 
-    return response_message(200, {'Labels': contents})
+    return {"statusCode": 200,
+            "headers": {"Content-Type": "application/json"},
+            "body": {'Labels': contents}}
+
+# if __name__== "__main__":
+#    main({})
