@@ -2,8 +2,8 @@ import numpy as np
 import cv2
 import base64
 
-neural_network = cv2.dnn.readNetFromCaffe("./neuralNetwork/MobileNetSSD_deploy.prototxt.txt",
-                                          "./neuralNetwork/MobileNetSSD_deploy.caffemodel")
+neural_network = cv2.dnn.readNetFromCaffe("/image-recognition/MobileNetSSD_deploy.prototxt.txt",
+                                          "/image-recognition/MobileNetSSD_deploy.caffemodel")
 
 classNames = ["background", "aeroplane", "bicycle", "bird", "boat",
               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
