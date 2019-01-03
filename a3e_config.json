@@ -13,7 +13,7 @@
        "version": ">=3.4.2"
       }
     ],
-    "memory": 256,
+    "memory": 300,
     "paramName": "body",
     "authenticated": false
 }
