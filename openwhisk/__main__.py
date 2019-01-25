@@ -38,6 +38,8 @@ def main(args):
         name = classNames[int(elem[1])]
         # sorting elem[2:] descenting and take highest confidence
         confidence = 100 * sorted(elem[2:], reverse = True)[0]
+        if confidence > 100:
+           confidence = 100
         contents.append({"Name": name, "Confidence": confidence})
 
     return {"statusCode": 200,
