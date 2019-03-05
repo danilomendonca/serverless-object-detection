@@ -1,6 +1,6 @@
 {
     "functionName": "imageRecognition",
-    "path": "openwhisk/imageRecognition.zip",
+    "path": "openwhisk/imageRecognitionCache.zip",
     "runtime": "python",
     "runtimeVersion": 2.7,
     "dependencies": [
