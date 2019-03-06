@@ -3,8 +3,13 @@ import cv2
 import base64
 
 def main(args):
-    neural_network = cv2.dnn.readNetFromCaffe("./imageRecognition/MobileNetSSD_deploy.prototxt.txt",
-                                          "./imageRecognition/MobileNetSSD_deploy.caffemodel")
+    global cache
+    if 'cache' not in globals():
+        neural_network = cv2.dnn.readNetFromCaffe("./imageRecognition/MobileNetSSD_deploy.prototxt.txt",
+                                              "./imageRecognition/MobileNetSSD_deploy.caffemodel")
+        cache = neural_network
+    else:
+        neural_network = cache
 
     classNames = ["background", "aeroplane", "bicycle", "bird", "boat",
               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
@@ -24,7 +29,8 @@ def main(args):
 
     return {"statusCode": 200,
             "headers": {"Content-Type": "application/json"},
-            "body": {'Labels': contents}}
+            "body": {'Labels': contents},
+            "cache": cache}
 
 # if __name__== "__main__":
 #    main({})
